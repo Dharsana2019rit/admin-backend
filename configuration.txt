@@ -1,0 +1,90 @@
+//LoginConfiguration.cs
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using cafemanagement.Models;
+
+namespace cafemanagement.Data.Configurations
+{
+    public class LoginConfiguration : IEntityTypeConfiguration<Login>
+    {
+        public void Configure(EntityTypeBuilder<Login> builder)
+        {
+            builder.HasKey(l => l.LoginId);
+            builder.Property(l => l.EmailId).IsRequired();
+            builder.Property(l => l.Password).IsRequired();
+            builder.Property(l => l.Role)
+       .IsRequired(); // Ensure Role is required
+
+
+        }
+    }
+}
+
+//MenuConfiguration.cs
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using cafemanagement.Models;
+
+namespace cafemanagement.Data.Configurations
+{
+    public class MenuConfiguration : IEntityTypeConfiguration<Menu>
+    {
+        public void Configure(EntityTypeBuilder<Menu> builder)
+        {
+            builder.HasKey(m => m.MenuId);
+            builder.Property(m => m.Category).IsRequired();
+            builder.HasMany(m => m.MenuItems).WithOne(mi => mi.Menu).HasForeignKey(mi => mi.MenuId);
+        }
+    }
+}
+
+//OrderConfiguration.cs
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using cafemanagement.Models;
+
+namespace cafemanagement.Data.Configurations
+{
+    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    {
+        public void Configure(EntityTypeBuilder<Order> builder)
+        {
+            builder.HasKey(o => o.OrderId);
+
+            builder.Property(o => o.OrderDate)
+                   .IsRequired();
+
+            builder.Property(o => o.ItemName)
+                   .IsRequired();
+
+            builder.Property(o => o.Price)
+                   .HasColumnType("decimal(18, 2)")
+                   .IsRequired();
+
+            builder.Property(o => o.Quantity)
+                   .IsRequired();
+
+        }
+    }
+}
+
+//TableBookingConfiguration.cs
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using cafemanagement.Models;
+
+namespace cafemanagement.Data.Configurations
+{
+    public class TableBookingConfiguration : IEntityTypeConfiguration<TableBooking>
+    {
+        public void Configure(EntityTypeBuilder<TableBooking> builder)
+        {
+            builder.HasKey(tb => tb.TableBookingId);
+            builder.Property(tb => tb.BookingDateTime).IsRequired();
+            builder.Property(tb => tb.NumberOfGuests).IsRequired();
+            builder.Property(tb => tb.TableNumber).IsRequired(); // Add TableNumber property configuration
+            builder.Property(tb => tb.IsBooked).IsRequired(); // Add IsBooked property configuration
+            builder.HasOne(tb => tb.Customer).WithMany(c => c!.TableBookings).HasForeignKey(tb => tb.CustomerId);
+        }
+    }
+}
